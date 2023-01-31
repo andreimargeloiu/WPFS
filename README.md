@@ -1,23 +1,24 @@
 # Weight Predictor Networks with Feature Selection (WPFS)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/a-norcliffe/sonode/blob/master/LICENSE) [![Python 3.7+](https://img.shields.io/badge/python-3.7+-blue.svg)](https://www.python.org/downloads/release/python-370/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/a-norcliffe/sonode/blob/master/LICENSE) [![Python 3.7+](https://img.shields.io/badge/python-3.7+-blue.svg)](https://www.python.org/downloads/release/python-370/) [![Video presentation](https://img.shields.io/badge/Youtube-Video%20presentation-red)](https://youtu.be/18mULGRf1N8) [![Poster](https://img.shields.io/badge/-Poster-yellow)](https://docs.google.com/presentation/d/1G9ElKvj7KEc1SuXRDJjwT_ypuHkEOfRxQ4aqIJ36eYw/edit?usp=sharing)
 
-Official code for the paper [**Weight Predictor Network with Feature Selection for Small Sample Tabular Biomedical Data**](https://arxiv.org/abs/2211.15616) accepted at [**AAAI-2023**](https://aaai.org/Conferences/AAAI-23/)
+Official code for the paper [**Weight Predictor Network with Feature Selection for Small Sample Tabular Biomedical Data**](https://arxiv.org/abs/2211.15616) accepted at [**AAAI Conference on Artificial Intelligence 2023**](https://aaai.org/Conferences/AAAI-23/)
 
 
-([Andrei Margeloiu](https://www.andrei.ai/),
+by [Andrei Margeloiu](https://www.andrei.ai/),
 [Nikola Simidjievski](https://simidjievskin.github.io/),
 [Pietro Lio](https://www.cl.cam.ac.uk/~pl219/),
-[Mateja Jamnik](https://www.cl.cam.ac.uk/~mj201/))
-
-
-
-**TL;DR:** WPFS is a general framework for learning neural networks from high-dimensional and small-sample data by reducing the number of learnable parameters, and performing global feature selection. In addition to the predictor network, WPFS combines two small auxiliary networks: a weight predictor network that outputs the weight matrix of the first layer, and a feature-selection network that serves as an additional mechanism for regularisation.
+[Mateja Jamnik](https://www.cl.cam.ac.uk/~mj201/)
 
 
 ![image](https://user-images.githubusercontent.com/18227298/215850753-e573c226-03b8-4191-aec7-3a87785b04d4.png)
 
+**TL;DR:** WPFS is a general framework for learning neural networks from high-dimensional and small-sample data by reducing the number of learnable parameters, and performing global feature selection. In addition to the predictor network, WPFS combines two small auxiliary networks: a weight predictor network that outputs the weight matrix of the first layer, and a feature-selection network that serves as an additional mechanism for regularisation.
 
-**Abstract:** Tabular biomedical data is often high-dimensional but with a very small number of samples. Although recent work showed that well-regularised simple neural networks could outperform more sophisticated architectures on tabular data, they are still prone to overfitting on tiny datasets with many potentially irrelevant features. To combat these issues, we propose Weight Predictor Network with Feature Selection (WPFS) for learning neural networks from high-dimensional and small sample data by reducing the number of learnable parameters and simultaneously performing feature selection. In addition to the classification network, WPFS uses two small auxiliary networks that together output the weights of the first layer of the classification model. We evaluate on nine real-world biomedical datasets and demonstrate that WPFS outperforms other standard as well as more recent methods typically applied to tabular data. Furthermore, we investigate the proposed feature selection mechanism and show that it improves performance while providing useful insights into the learning task.
+
+![](https://github.com/andreimargeloiu/WPFS/blob/main/paper.gif)
+
+**Paper abstract:** Tabular biomedical data is often high-dimensional but with a very small number of samples. Although recent work showed that well-regularised simple neural networks could outperform more sophisticated architectures on tabular data, they are still prone to overfitting on tiny datasets with many potentially irrelevant features. To combat these issues, we propose Weight Predictor Network with Feature Selection (WPFS) for learning neural networks from high-dimensional and small sample data by reducing the number of learnable parameters and simultaneously performing feature selection. In addition to the classification network, WPFS uses two small auxiliary networks that together output the weights of the first layer of the classification model. We evaluate on nine real-world biomedical datasets and demonstrate that WPFS outperforms other standard as well as more recent methods typically applied to tabular data. Furthermore, we investigate the proposed feature selection mechanism and show that it improves performance while providing useful insights into the learning task.
+
 
 # Citation
 
