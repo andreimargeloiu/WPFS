@@ -9,10 +9,11 @@ by [Andrei Margeloiu](https://www.andrei.ai/),
 [Pietro Lio](https://www.cl.cam.ac.uk/~pl219/),
 [Mateja Jamnik](https://www.cl.cam.ac.uk/~mj201/)
 
+**TL;DR:** WPFS is a general framework for learning neural networks from high-dimensional and small-sample data by reducing the number of learnable parameters, and performing global feature selection. In addition to the predictor network, WPFS combines two small auxiliary networks: a weight predictor network that outputs the weight matrix of the first layer, and a feature-selection network that serves as an additional mechanism for regularisation.
+
 
 ![image](https://user-images.githubusercontent.com/18227298/215850753-e573c226-03b8-4191-aec7-3a87785b04d4.png)
 
-**TL;DR:** WPFS is a general framework for learning neural networks from high-dimensional and small-sample data by reducing the number of learnable parameters, and performing global feature selection. In addition to the predictor network, WPFS combines two small auxiliary networks: a weight predictor network that outputs the weight matrix of the first layer, and a feature-selection network that serves as an additional mechanism for regularisation.
 
 
 ![](https://github.com/andreimargeloiu/WPFS/blob/main/paper.gif)
