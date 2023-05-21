@@ -1,5 +1,7 @@
 # Weight Predictor Networks with Feature Selection (WPFS)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/a-norcliffe/sonode/blob/master/LICENSE) [![Python 3.7+](https://img.shields.io/badge/python-3.7+-blue.svg)](https://www.python.org/downloads/release/python-370/) [![Video presentation](https://img.shields.io/badge/Youtube-Video%20presentation-red)](https://youtu.be/18mULGRf1N8) [![Poster](https://img.shields.io/badge/-Poster-yellow)](https://docs.google.com/presentation/d/1G9ElKvj7KEc1SuXRDJjwT_ypuHkEOfRxQ4aqIJ36eYw/edit?usp=sharing)
+[![Arxiv-Paper](https://img.shields.io/badge/Arxiv-Paper-yellow)](https://arxiv.org/abs/2211.15616)
+[![Video presentation](https://img.shields.io/badge/Youtube-Video%20presentation-red)](https://youtu.be/18mULGRf1N8) [![Poster](https://img.shields.io/badge/-Poster-yellow)](https://docs.google.com/presentation/d/1G9ElKvj7KEc1SuXRDJjwT_ypuHkEOfRxQ4aqIJ36eYw/edit?usp=sharing)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/a-norcliffe/sonode/blob/master/LICENSE) [![Python 3.7+](https://img.shields.io/badge/python-3.7+-blue.svg)](https://www.python.org/downloads/release/python-370/) 
 
 Official code for the paper [**Weight Predictor Network with Feature Selection for Small Sample Tabular Biomedical Data**](https://arxiv.org/abs/2211.15616) accepted at [**AAAI Conference on Artificial Intelligence 2023**](https://aaai.org/Conferences/AAAI-23/)
 
