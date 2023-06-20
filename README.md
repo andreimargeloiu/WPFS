@@ -80,15 +80,3 @@ pip install -r requirements.txt
 **Step 1:** Run the script `run_experiment.sh`
 
 **Step 2:** Analyze the results in the notebook `analyze_experiments.ipynb`
-
-## Further ablations
-
-**LassoNet baseline**. We found that LassoNet is unstable when training on all our small size and high-dimensional data (see notebook `lassonet_instabilities.ipynb`).
-```
-pip install ./lassonet
-```
-
-**Installing LightGBM** with GPU requires a special command
-```
-pip install lightgbm --install-option=--gpu --install-option="--opencl-include-dir=/usr/local/cuda/include/" --install-option="--opencl-library=/usr/local/cuda/lib64/libOpenCL.so"
-```

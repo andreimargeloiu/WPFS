@@ -6,11 +6,7 @@ from pytorch_lightning.callbacks.model_checkpoint import ModelCheckpoint
 from pytorch_lightning.callbacks import RichProgressBar, LearningRateMonitor
 from pytorch_lightning.loggers import CSVLogger
 
-import lightgbm as lgb
 from sklearn.ensemble import RandomForestClassifier
-from pytorch_tabnet.tab_model import TabNetClassifier
-from pytorch_tabnet.metrics import Metric
-from lassonet import LassoNetClassifier
 from functools import partial
 
 import os
@@ -42,100 +38,20 @@ def train(args):
 
 
 	#### Baselines training
-	if args.model in ['rf', 'lightgbm', 'tabnet', 'lassonet']:
+	if args.model == 'rf':
 		# scikit-learn expects class_weights to be a dictionary
 		class_weights = {}
 		for i, val in enumerate(args.class_weights):
 			class_weights[i] = val
 
 		class_weights_list = [class_weights[i] for i in range(len(class_weights))]
+	
+		model = RandomForestClassifier(n_estimators=args.rf_n_estimators, 
+					min_samples_leaf=args.rf_min_samples_leaf, max_depth=args.rf_max_depth,
+					class_weight=class_weights, max_features='sqrt',
+					random_state=42, verbose=True)
+		model.fit(data_module.X_train, data_module.y_train)
 
-
-		if args.model == 'rf':
-			model = RandomForestClassifier(n_estimators=args.rf_n_estimators, 
-						min_samples_leaf=args.rf_min_samples_leaf, max_depth=args.rf_max_depth,
-						class_weight=class_weights, max_features='sqrt',
-						random_state=42, verbose=True)
-			model.fit(data_module.X_train, data_module.y_train)
-
-		elif args.model == 'lightgbm':
-			params = {
-				'max_depth': args.lightgbm_max_depth,
-				'learning_rate': args.lightgbm_learning_rate,
-				'min_data_in_leaf': args.lightgbm_min_data_in_leaf,
-
-				'class_weight': class_weights,
-				'n_estimators': 200,
-				'objective': 'cross_entropy',
-				'num_iterations': 10000,
-				'device': 'gpu',
-				'feature_fraction': '0.3'
-			}
-
-			model = lgb.LGBMClassifier(**params)
-			model.fit(data_module.X_train, data_module.y_train,
-		  		eval_set=[(data_module.X_valid, data_module.y_valid)],
-	 	  		callbacks=[lgb.early_stopping(stopping_rounds=100)])
-
-		elif args.model == 'tabnet':
-			model = TabNetClassifier(
-				n_d=8, n_a=8, # The TabNet implementation says "Bigger values gives more capacity to the model with the risk of overfitting".
-							  # 	We used the smallest typical value to avoid overfitting.
-				n_steps=3, gamma=1.5, n_independent=2, n_shared=2, # default values
-				momentum=0.3, clip_value=2.,
-				lambda_sparse=args.tabnet_lambda_sparse,
-				optimizer_fn=torch.optim.Adam,
-				optimizer_params=dict(lr=args.lr), # the original paper sugests 2e-2
-				scheduler_fn=torch.optim.lr_scheduler.StepLR,
-				scheduler_params = {"gamma": 0.95, "step_size": 20},
-				seed=args.seed_training
-			)
-
-			class WeightedCrossEntropy(Metric):
-				def __init__(self):
-					self._name = "cross_entropy"
-					self._maximize = False
-
-				def __call__(self, y_true, y_score):
-					aux = F.cross_entropy(
-						input=torch.tensor(y_score, device='cuda'),
-						target=torch.tensor(y_true, device='cuda'),
-						weight=torch.tensor(args.class_weights, device='cuda')
-					).detach().cpu().numpy()
-
-					return float(aux)
-
-			virtual_batch_size = 5
-			if args.dataset == 'lung': 
-				virtual_batch_size = 6 # lung has training of size 141. With a virtual_batch_size of 5, the last batch is of size 1 and we get an error because of BatchNorm
-
-			batch_size = args.train_size
-			model.fit(data_module.X_train, data_module.y_train,
-		  			  eval_set=[(data_module.X_valid, data_module.y_valid)],
-					  eval_metric=[WeightedCrossEntropy], 
-					  loss_fn=torch.nn.CrossEntropyLoss(torch.tensor(args.class_weights, device='cuda')),
-					  batch_size=batch_size,
-					  virtual_batch_size=virtual_batch_size,
-					  max_epochs=5000, patience=100)
-
-
-		elif args.model == 'lassonet':
-			model = LassoNetClassifier(
-				lambda_start=args.lassonet_lambda_start,
-				M = args.lassonet_M,
-				n_iters = args.lassonet_epochs,
-				
-				optim = partial(torch.optim.AdamW, lr=1e-4, betas=[0.9, 0.98]),
-				hidden_dims=(100, 100, 10),
-				class_weight = class_weights_list, # use weighted loss
-				dropout=0.2,
-				batch_size=8,
-				backtrack=True # if True, ensure the objective is decreasing
-			)
-
-			model.path(data_module.X_train, data_module.y_train,
-				X_val = data_module.X_valid, y_val = data_module.y_valid)
-		
 		#### Log metrics
 		y_pred_train = model.predict(data_module.X_train)
 		y_pred_valid = model.predict(data_module.X_valid)
@@ -245,7 +161,7 @@ def parse_arguments(args=None):
 
 	###############		 Model			###############
 
-	parser.add_argument('--model', type=str, choices=['mlp', 'wpfs', 'rf', 'lightgbm', 'tabnet', 'fsnet', 'cae', 'dietnetworks', 'lassonet'], default='wpfs')
+	parser.add_argument('--model', type=str, choices=['mlp', 'wpfs', 'rf', 'fsnet', 'cae', 'dietnetworks'], default='wpfs')
 	parser.add_argument('--feature_extractor_dims', type=int, nargs='+', default=[100, 100, 10],
 						help='layer size for the feature extractor. If using a virtual layer,\
 							  the first dimension must match it.')
@@ -276,13 +192,6 @@ def parse_arguments(args=None):
 	parser.add_argument('--wpn_embedding_size', type=int, default=50, help='Size of the gene embedding')
 
 	parser.add_argument('--wpn_layers', type=int, nargs='+', default=[100, 100, 100, 100], help="The list of layer sizes for the weight predictor network.")
-							
-	
-	###############		LassoNet parameters				###############
-	parser.add_argument('--lassonet_lambda_start', default=0.1, help='higher coefficient the sparser the feature selection')
-	parser.add_argument('--lassonet_gamma', type=float, default=0, help='higher coefficient the sparser the feature selection')
-	parser.add_argument('--lassonet_epochs', type=int, default=200)
-	parser.add_argument('--lassonet_M', type=float, default=10)
 
 	###############		Concrete autoencoder parameters	###############
 	parser.add_argument('--concrete_anneal_iterations', type=int, default=1000,
@@ -293,12 +202,6 @@ def parse_arguments(args=None):
 	parser.add_argument('--rf_n_estimators', type=int, default=500, help='number of trees in the random forest')
 	parser.add_argument('--rf_max_depth', type=int, default=5, help='maximum depth of the tree')
 	parser.add_argument('--rf_min_samples_leaf', type=int, default=2, help='minimum number of samples in a leaf')
-
-	parser.add_argument('--lightgbm_learning_rate', type=float, default=0.1)
-	parser.add_argument('--lightgbm_max_depth', type=int, default=1)
-	parser.add_argument('--lightgbm_min_data_in_leaf', type=int, default=2)
-
-	parser.add_argument('--tabnet_lambda_sparse', type=float, default=1e-3, help='higher coefficient the sparser the feature selection')
 
 						
 	####### Training
@@ -450,36 +353,6 @@ if __name__ == "__main__":
 			}
 
 			args.rf_max_depth, args.rf_min_samples_leaf = params[args.dataset]
-		
-		elif args.model=='tabnet':
-			params = {
-				'cll': (0.03, 0.001),
-				'lung': (0.02, 0.1),
-				'metabric-dr': (0.03, 0.1),
-				'metabric-pam50': (0.02, 0.001),
-				'prostate': (0.02, 0.01),
-				'smk': (0.03, 0.001),
-				'tcga-2ysurvival': (0.02, 0.01),
-				'tcga-tumor-grade': (0.02, 0.01),
-				'toxicity': (0.03, 0.1)
-			}
-
-			args.lr, args.tabnet_lambda_sparse = params[args.dataset]
-
-		elif args.model=='lightgbm':
-			params = {
-				'cll': (0.1, 2),
-				'lung': (0.1, 1),
-				'metabric-dr': (0.1, 1),
-				'metabric-pam50': (0.01, 2),
-				'prostate': (0.1, 2),
-				'smk': (0.1, 2),
-				'tcga-2ysurvival': (0.1, 1),
-				'tcga-tumor-grade': (0.1, 1),
-				'toxicity': (0.1, 2)
-			}
-
-			args.lightgbm_learning_rate, args.lightgbm_max_depth = params[args.dataset]
 		
 
 	if args.run_repeats_and_cv:
