@@ -80,3 +80,5 @@ pip install -r requirements.txt
 **Step 1:** Run the script `run_experiment.sh`
 
 **Step 2:** Analyze the results in the notebook `analyze_experiments.ipynb`
+
+**Adding a new dataset is straightforward:**. Search `your_custom_dataset` in the codebase and replace it with your dataset.

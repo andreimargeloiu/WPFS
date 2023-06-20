@@ -114,6 +114,8 @@ def load_smk():
 
 	return X, Y
 
+def load_your_custom_dataset():
+	return np.random.rand(100, 100), np.random.randint(0, 2, 100)
 
 class CustomPytorchDataset(Dataset):
 	def __init__(self, X, y, transform=None) -> None:
@@ -347,7 +349,7 @@ def create_data_module(args):
 
 		X, y = load_csv_data(dataset_path)
 
-	elif dataset in ['lung', 'toxicity', 'prostate', 'cll', 'smk']:
+	else:
 		if dataset=='lung':
 			X, y = load_lung()
 		elif dataset=='toxicity':
@@ -358,6 +360,10 @@ def create_data_module(args):
 			X, y = load_cll()
 		elif dataset=='smk':
 			X, y = load_smk()
+		elif dataset=='your_custom_dataset':
+			X, y = load_your_custom_dataset()
+		else:
+			raise Exception("Dataset not supported")
 
 	args.dataset_size = X.shape[0]
 
