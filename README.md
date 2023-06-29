@@ -27,13 +27,11 @@ by [Andrei Margeloiu](https://www.andrei.ai/),
 
 For attribution in academic contexts, please cite this work as
 ```
-@misc{margeloiu2022weights,
+@inproceedings{margeloiu2023weights,
   title={Weight Predictor Network with Feature Selection for Small Sample Tabular Biomedical Data},
   author={Margeloiu, Andrei and Simidjievski, Nikola and Lio, Pietro and Jamnik, Mateja},
-  eprint={2211.15616},
-  archivePrefix={arXiv},
-  howpublished={https://arxiv.org/abs/2211.15616},
-  year={2022}
+  booktitle={37th AAAI Conference on Artificial Intelligence},
+  year={2023}
 }
 ```
 
